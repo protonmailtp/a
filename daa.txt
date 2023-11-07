@@ -1,0 +1,1067 @@
+                                   ___                _   _           _     
+  /\  /\__ _ _ __  _ __  _   _    / _ \_ __ __ _  ___| |_(_) ___ __ _| |___ 
+ / /_/ / _` | '_ \| '_ \| | | |  / /_)/ '__/ _` |/ __| __| |/ __/ _` | / __|
+/ __  / (_| | |_) | |_) | |_| | / ___/| | | (_| | (__| |_| | (_| (_| | \__ \
+\/ /_/ \__,_| .__/| .__/ \__, | \/    |_|  \__,_|\___|\__|_|\___\__,_|_|___/
+            |_|   |_|    |___/                                              
+			@@@ Encoded By cmV4b3I and VjFBQ0s
+
+
+
+1. Fibonacci Recursive and Non Recursive
+
+#====python
+
+import timeit
+
+def fibonacci(n):
+    for i in range(2, n + 1):
+        fib_list[i] = fib_list[i - 1] + fib_list[i - 2]
+    return fib_list[n]
+
+
+def fibonacci_recursive(n):
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    fib_recur_list[n] = fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
+    return fib_recur_list[n]
+
+
+N = 20
+RUNS = 1000
+print(f"Given N = {N}\n{RUNS} runs")
+
+fib_list = [0] * (N + 1)
+fib_list[0] = 0
+fib_list[1] = 1
+print(
+ "Fibonacci non-recursive:",
+ fibonacci(N),
+ "\tTime:",
+ f'{timeit.timeit("fibonacci(N)", setup=f"from __main__ import fibonacci;N={N}",number=RUNS):5f}',"O(n)\tSpace: O(1)",)
+
+fib_recur_list = [0] * (N + 1)
+fib_recur_list[0] = 0
+fib_recur_list[1] = 1
+print(
+ "Fibonacci recursive:\t",
+ fibonacci_recursive(N),
+ "\tTime:",
+f'{timeit.timeit("fibonacci_recursive(N)", setup=f"from __main__ import fibonacci_recursive;N={N}", number=RUNS,):5f}',"O(2^n)\tSpace: O(n)",)
+
+#====
+
+#====java 
+
+1.1
+
+import java.util.Scanner;
+
+public class FibonacciRecursive {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter a number: ");
+        int n = scanner.nextInt();
+
+        System.out.println("Fibonacci Series up to " + n + ":");
+        for (int i = 0; i <= n; i++) {
+            int fibonacciValue = fibonacci(i);
+            System.out.print(fibonacciValue + " ");
+        }
+
+        int fibonacciN = fibonacci(n);
+        System.out.println("\nFibonacci value at position " + n + " is: " + fibonacciN);
+
+        scanner.close();
+    }
+
+    public static int fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        } else {
+            return fibonacci(n - 1) + fibonacci(n - 2);
+        }
+    }
+}
+
+1.2
+
+import java.util.Scanner;
+
+public class FibonacciIterative {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter a number: ");
+        int n = scanner.nextInt();
+
+        System.out.println("Fibonacci Series up to " + n + ":");
+        for (int i = 0; i <= n; i++) {
+            int fibonacciValue = fibonacciIterative(i);
+            System.out.print(fibonacciValue + " ");
+        }
+
+        int fibonacciN = fibonacciIterative(n);
+        System.out.println("\nFibonacci value at position " + n + " is: " + fibonacciN);
+
+        scanner.close();
+    }
+
+    public static int fibonacciIterative(int n) {
+        if (n <= 1) {
+            return n;
+        }
+
+        int fib1 = 0;
+        int fib2 = 1;
+        int fibonacciValue = 0;
+
+        for (int i = 2; i <= n; i++) {
+            fibonacciValue = fib1 + fib2;
+            fib1 = fib2;
+            fib2 = fibonacciValue;
+        }
+
+        return fibonacciValue;
+    }
+}
+
+#====
+
+
+2. Huffman Encoding using a greedy strategy.
+
+#====python
+class Node:
+    def __init__(self, freq_, symbol_, left_=None, right_=None):
+        self.freq = freq_
+        self.symbol = symbol_
+        self.left = left_
+        self.right = right_
+        self.huff = ""
+
+
+def print_nodes(node, val=""):
+    new_val = val + str(node.huff)
+    if node.left:
+        print_nodes(node.left, new_val)
+    if node.right:
+        print_nodes(node.right, new_val)
+    if not node.left and not node.right:
+        print(f"{node.symbol} > {new_val}")
+
+
+chars = ["a", "b", "c", "d", "e", "f"]
+
+freq = [5, 9, 12, 13, 16, 45]
+
+nodes = [Node(freq[x], chars[x]) for x in range(len(chars))]
+
+while len(nodes) > 1:
+    nodes = sorted(nodes, key=lambda x: x.freq)
+
+    left = nodes[0]
+    right = nodes[1]
+    left.huff = 0
+    right.huff = 1
+    newNode = Node(left.freq + right.freq, left.symbol + right.symbol, left, right)
+    nodes.remove(left)
+    nodes.remove(right)
+    nodes.append(newNode)
+    
+print("Characters :", f'[{", ".join(chars)}]')
+print("Frequency :", freq, "\n\nHuffman Encoding:")
+print_nodes(nodes[0])
+
+#====
+
+#====java
+
+import java.util.*;
+
+public class HuffmanEncoding {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter a string: ");
+        String inputString = scanner.nextLine();
+
+        Map<Character, Integer> frequencyMap = new HashMap<>();
+
+        // Count character frequencies
+        for (char c : inputString.toCharArray()) {
+            frequencyMap.put(c, frequencyMap.getOrDefault(c, 0) + 1);
+        }
+
+        // Build Huffman Tree
+        PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(node -> node.frequency));
+
+        for (Map.Entry<Character, Integer> entry : frequencyMap.entrySet()) {
+            priorityQueue.add(new HuffmanNode(entry.getKey(), entry.getValue()));
+        }
+
+        while (priorityQueue.size() > 1) {
+            HuffmanNode left = priorityQueue.poll();
+            HuffmanNode right = priorityQueue.poll();
+            HuffmanNode merged = new HuffmanNode('\0', left.frequency + right.frequency);
+            merged.left = left;
+            merged.right = right;
+            priorityQueue.add(merged);
+        }
+
+        HuffmanNode root = priorityQueue.poll();
+        Map<Character, String> huffmanCodes = new HashMap<>();
+
+        // Generate Huffman Codes
+        generateHuffmanCodes(root, "", huffmanCodes);
+
+        System.out.println("Character\tFrequency\tCode\tCode Length");
+        for (Map.Entry<Character, String> entry : huffmanCodes.entrySet()) {
+            System.out.println(entry.getKey() + "\t" + frequencyMap.get(entry.getKey()) + "\t" + entry.getValue() + "\t" + entry.getValue().length());
+        }
+
+        System.out.print("Encoded String: ");
+        String encodedString = encodeString(inputString, huffmanCodes);
+        System.out.println(encodedString);
+
+        scanner.close();
+    }
+
+    public static void generateHuffmanCodes(HuffmanNode node, String code, Map<Character, String> huffmanCodes) {
+        if (node == null) {
+            return;
+        }
+        if (node.data != '\0') {
+            huffmanCodes.put(node.data, code);
+        }
+        generateHuffmanCodes(node.left, code + "0", huffmanCodes);
+        generateHuffmanCodes(node.right, code + "1", huffmanCodes);
+    }
+
+    public static String encodeString(String input, Map<Character, String> huffmanCodes) {
+        StringBuilder encodedString = new StringBuilder();
+        for (char c : input.toCharArray()) {
+            encodedString.append(huffmanCodes.get(c));
+        }
+        return encodedString.toString();
+    }
+}
+class HuffmanNode {
+    char data;
+    int frequency;
+    HuffmanNode left;
+    HuffmanNode right;
+
+    public HuffmanNode(char data, int frequency) {
+        this.data = data;
+        this.frequency = frequency;
+        left = null;
+        right = null;
+    }
+}
+
+// output
+// abracadabra
+
+#====
+
+
+
+3. Fractional Knapsack problem using a greedy method
+
+#====python
+class ItemValue:
+    def __init__(self, wt_, val_, ind_):
+        self.wt = wt_
+        self.val = val_
+        self.ind = ind_
+        self.cost = val_ / wt_
+    
+    def __lt__(self, other):
+        return self.cost < other.cost
+
+
+def fractionalKnapSack(wt, val, capacity):
+    iVal = [ItemValue(wt[i], val[i], i) for i in range(len(wt))]
+    
+     # sorting items by value
+    iVal.sort(reverse=True)
+    
+    totalValue = 0
+    for i in iVal:
+        curWt = i.wt
+        curVal = i.val
+        if capacity - curWt >= 0:
+            capacity -= curWt
+            totalValue += curVal
+        else:
+            fraction = capacity / curWt
+            totalValue += curVal * fraction
+            capacity = int(capacity - (curWt * fraction))
+            break
+    return totalValue
+
+
+if __name__ == "__main__":
+    wt = [10, 40, 20, 30]
+    val = [60, 40, 100, 120]
+    capacity = 50
+    maxValue = fractionalKnapSack(wt, val, capacity)
+    print("Maximum value in Knapsack =", maxValue)
+
+#====
+
+#====java
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class FractionalKnapsack {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the knapsack capacity: ");
+        double capacity = scanner.nextDouble();
+
+        System.out.print("Enter the number of items: ");
+        int n = scanner.nextInt();
+
+        KnapsackItem[] items = new KnapsackItem[n];
+
+        for (int i = 0; i < n; i++) {
+            System.out.println("Enter weight of item " + (i + 1) + ":");
+            double weight = scanner.nextDouble();
+            System.out.println("Enter value of item " + (i + 1) + ":");
+            double value = scanner.nextDouble();
+            items[i] = new KnapsackItem(i + 1, weight, value);
+        }
+
+        double maxValue = fractionalKnapsack(items, capacity);
+        System.out.println("Total value added in the knapsack: " + maxValue);
+
+        scanner.close();
+    }
+
+    public static double fractionalKnapsack(KnapsackItem[] items, double capacity) {
+        Arrays.sort(items, (a, b) -> Double.compare(b.ratio, a.ratio));
+
+        double maxTotalValue = 0.0;
+        double currentCapacity = capacity;
+
+        for (KnapsackItem item : items) {
+            if (currentCapacity <= 0) {
+                break;
+            }
+
+            double fraction = Math.min(item.weight, currentCapacity);
+            maxTotalValue += fraction * item.ratio;
+            currentCapacity -= fraction;
+
+            if (fraction > 0) {
+                System.out.println("Taken: KnapsackItem{index=" + item.index + ", value=" + item.value +
+                        ", weight=" + item.weight + ", ratio=" + item.ratio + "}");
+            }
+        }
+
+        if (currentCapacity > 0) {
+            System.out.println("Taken Fractional item: " + items[0].index + ", Taken fractional value: " + currentCapacity * items[0].ratio + ", used weight =" + currentCapacity + ", ratio = " + items[0].ratio);
+        }
+
+        return maxTotalValue;
+    }
+}
+
+class KnapsackItem {
+    int index;
+    double value;
+    double weight;
+    double ratio;
+
+    public KnapsackItem(int index, double weight, double value) {
+        this.index = index;
+        this.weight = weight;
+        this.value = value;
+        this.ratio = value / weight;
+    }
+}
+
+//    Enter the knapsack capacity: 10
+//        Enter the number of items: 5
+//        Enter weight of item 1:
+//        3
+//        Enter value of item 1:
+//        10
+//        Enter weight of item 2:
+//        3
+//        Enter value of item 2:
+//        15
+//        Enter weight of item 3:
+//        2
+//        Enter value of item 3:
+//        10
+//        Enter weight of item 4:
+//        5
+//        Enter value of item 4:
+//        12
+//        Enter weight of item 5:
+//        1
+//        Enter value of item 5:
+//        8
+//        Taken: KnapsackItem{index=5, value=8.0, weight=1.0, ratio=8.0}
+//        Taken: KnapsackItem{index=2, value=15.0, weight=3.0, ratio=5.0}
+//        Taken: KnapsackItem{index=3, value=10.0, weight=2.0, ratio=5.0}
+//        Taken: KnapsackItem{index=1, value=10.0, weight=3.0, ratio=3.3333333333333335}
+//        Taken: KnapsackItem{index=4, value=12.0, weight=5.0, ratio=2.4}
+//        Total value added in the knapsack: 45.4
+//
+//        Process finished with exit code 0
+
+#====
+
+4. 0/1 Knapsack using dynamic 
+
+#====python
+
+def knapsack_dp(W, wt, val, n):
+    K = [[0 for x in range(W + 1)] for x in range(n + 1)]
+
+
+    for i in range(n + 1):
+        for w in range(W + 1):
+            if i == 0 or w == 0:
+                K[i][w] = 0
+            elif wt[i - 1] <= w:
+                K[i][w] = max(val[i - 1] + K[i - 1][w - wt[i - 1]], K[i - 1][w])
+            else:
+                K[i][w] = K[i - 1][w]
+    return K[n][W]
+
+
+val = [60, 100, 120]
+wt = [10, 20, 30]
+W = 50
+n = len(val)
+print("Maximum possible profit =", knapsack_dp(W, wt, val, n))
+
+#====
+
+#====java
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class ZeroOneKnapsack {
+    public int knapSack(int[] profits, int[] weights, int capacity) {
+        int n = profits.length;
+        int[][] dp = new int[n + 1][capacity + 1];
+        boolean[][] selected = new boolean[n + 1][capacity + 1]; // To keep track of selected items
+
+        for (int i = 1; i <= n; i++) {
+            for (int w = 1; w <= capacity; w++) {
+                if (weights[i - 1] <= w) {
+                    int includeProfit = profits[i - 1] + dp[i - 1][w - weights[i - 1]];
+                    int excludeProfit = dp[i - 1][w];
+
+                    if (includeProfit > excludeProfit) {
+                        dp[i][w] = includeProfit;
+                        selected[i][w] = true; // Mark the item as selected
+                    } else {
+                        dp[i][w] = excludeProfit;
+                    }
+                } else {
+                    dp[i][w] = dp[i - 1][w];
+                }
+            }
+        }
+
+        // Print the dynamic programming matrix
+        System.out.println("Knapsack Matrix:");
+        for (int i = 0; i <= n; i++) {
+            for (int w = 0; w <= capacity; w++) {
+                System.out.print(dp[i][w] + " ");
+            }
+            System.out.println();
+        }
+
+        // Find the selected items and their values
+        int remainingCapacity = capacity;
+        List<Integer> selectedItems = new ArrayList<>();
+        for (int i = n; i > 0; i--) {
+            if (selected[i][remainingCapacity]) {
+                selectedItems.add(i - 1); // Adjust for 0-based indexing
+                remainingCapacity -= weights[i - 1];
+            }
+        }
+
+        // Print the selected items and their values
+        System.out.println("Selected items:");
+        for (int itemIdx : selectedItems) {
+            System.out.println("Item " + itemIdx + ", Value: " + profits[itemIdx]);
+        }
+
+        return dp[n][capacity];
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of items: ");
+        int n = scanner.nextInt();
+
+        int[] profits = new int[n];
+        int[] weights = new int[n];
+
+        System.out.println("Enter the profits of the items:");
+        for (int i = 0; i < n; i++) {
+            profits[i] = scanner.nextInt();
+        }
+
+        System.out.println("Enter the weights of the items:");
+        for (int i = 0; i < n; i++) {
+            weights[i] = scanner.nextInt();
+        }
+
+        System.out.print("Enter the capacity of the knapsack: ");
+        int capacity = scanner.nextInt();
+
+        ZeroOneKnapsack knapsackSolver = new ZeroOneKnapsack();
+        int maxProfit = knapsackSolver.knapSack(profits, weights, capacity);
+
+        System.out.println("Maximum Profit: " + maxProfit);
+
+        scanner.close();
+    }
+}
+
+//3
+//124
+//233
+//6
+
+//    Enter the number of items: 3
+//        Enter the profits of the items:
+//        1
+//        2
+//        3
+//        Enter the weights of the items:
+//        2
+//        3
+//        3
+//        Enter the capacity of the knapsack: 6
+//        Knapsack Matrix:
+//        0 0 0 0 0 0 0
+//        0 0 1 1 1 1 1
+//        0 0 1 2 2 3 3
+//        0 0 1 3 3 4 5
+//        Selected items:
+//        Item 2, Value: 3
+//        Item 1, Value: 2
+//        Maximum Profit: 5
+//
+//        Process finished with exit code 0
+
+#====
+
+5. nQueens first queen placed using backtracking
+
+#====python
+class NQBacktracking:
+    def __init__(self, x_, y_):
+        self.ld = [0] * 30
+        self.rd = [0] * 30
+        self.cl = [0] * 30
+        self.x = x_
+        self.y = y_
+    
+    def printSolution(self, board):
+        print(
+        "N Queen Backtracking Solution:\nGiven initial position of 1st queen at row:",self.x,"column:",self.y,"\n",)
+        for line in board:
+            print(" ".join(map(str, line)))
+    
+    def solveNQUtil(self, board, col):
+        if col == N:
+            return True
+        if col == self.y:
+            return self.solveNQUtil(board, col + 1)
+    
+        for i in range(N):
+            if i == self.x:
+                continue
+            if (self.ld[i - col + N - 1] != 1 and self.rd[i + col] != 1) and self.cl[i] != 1:
+                board[i][col] = 1
+                self.ld[i - col + N - 1] = self.rd[i + col] = self.cl[i] = 1
+                if self.solveNQUtil(board, col + 1):
+                    return True
+                board[i][col] = 0 # BACKTRACK
+                self.ld[i - col + N - 1] = self.rd[i + col] = self.cl[i] = 0
+    
+        return False
+    
+    def solveNQ(self):
+        board = [[0 for _ in range(N)] for _ in range(N)]
+        board[self.x][self.y] = 1
+    
+        self.ld[self.x - self.y + N - 1] = self.rd[self.x + self.y] = self.cl[self.x] = 1
+        if not self.solveNQUtil(board, 0):
+            print("Solution does not exist")
+            return False
+        self.printSolution(board)
+        return True
+    
+
+if __name__ == "__main__":
+    N = 8
+    x, y = 3, 2
+
+    NQBt = NQBacktracking(x, y)
+    NQBt.solveNQ()
+
+
+#====
+
+#====java
+
+import java.util.Scanner;
+
+public class NQueensBranchAndBound {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the size of the chessboard (N): ");
+        int N = scanner.nextInt();
+        scanner.close();
+
+        int[][] board = new int[N][N];
+        System.out.println("Step-by-step process of placing queens:\n");
+
+        if (solveNQueens(board, 0, N)) {
+            System.out.println("\nFinal solution:");
+            printSolution(board);
+        } else {
+            System.out.println("No solution exists.");
+        }
+    }
+
+    static boolean solveNQueens(int[][] board, int col, int N) {
+        if (col >= N) {
+            return true;
+        }
+
+        for (int row = 0; row < N; row++) {
+            if (isSafe(board, row, col, N)) {
+                board[row][col] = 1;
+                System.out.println("Placing queen at row " + (row + 1) + ", column " + (col + 1) + "\n");
+                printBoard(board);
+                if (solveNQueens(board, col + 1, N)) {
+                    return true;
+                }
+                System.out.println("Backtracking at row " + (row + 1) + ", column " + (col + 1) + "\n");
+                board[row][col] = 0; // Backtrack
+            }
+        }
+        return false;
+    }
+
+    static boolean isSafe(int[][] board, int row, int col, int N) {
+        for (int i = 0; i < col; i++) {
+            if (board[row][i] == 1) {
+                return false;
+            }
+        }
+
+        for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+            if (board[i][j] == 1) {
+                return false;
+            }
+        }
+
+        for (int i = row, j = col; i < N && j >= 0; i++, j--) {
+            if (board[i][j] == 1) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    static void printSolution(int[][] board) {
+        int N = board.length;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    static void printBoard(int[][] board) {
+        int N = board.length;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+}
+
+#====
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Theory Version 1.0
+
+&&&&&&&&&&
+Fib Theory
+
+Overview:
+
+The Fibonacci numbers are the numbers in the following integer sequence.
+0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144,........
+In mathematical terms, the sequence Fn of Fibonacci numbers is defined by the recurrence relation
+Fn = Fn-1 + Fn-2
+With seed values
+F0 = 0 and F1 = 1.
+The function recursive_fibonacci takes an integer n as input and calculates the nth number in the Fibonacci sequence.
+
+
+
+code:
+
+recursive_fibonacci function:
+
+This function calculates the nth Fibonacci number using recursion.
+If the input n is 0 or 1, it returns n itself, representing the base cases of the Fibonacci sequence.
+If n is greater than 1, it recursively calls the recursive_fibonacci function for (n-1) and (n-2), summing the results to compute the Fibonacci number for n.
+nonrecursive_fibonacci function:
+
+This function calculates the Fibonacci sequence in a non-recursive or iterative manner.
+It initializes first and second variables to 0 and 1 respectively (representing the first two numbers of the Fibonacci sequence).
+It prints the values of first and second.
+It enters a while loop that continues until n - 2 becomes less than or equal to 0.
+Within this loop:
+It calculates the third Fibonacci number by adding the first and second numbers.
+It shifts the values: first becomes the previous value of second, and second becomes the newly calculated third.
+It prints the value of the newly calculated third.
+It decrements n by 1.
+main section:
+
+It prompts the user to input a number (n).
+It then prints "Recursive" and tries to iterate over a range from 0 to n, calling the recursive_fibonacci(i) function in each iteration. This code part might throw an error as the recursive_fibonacci function is not designed to handle iterations in this manner.
+After the "Recursive" print loop, it prints "Non Recursive" and calls the nonrecursive_fibonacci function, passing the input n.
+
+&&&&&&&&&&
+
+&&&&&&&&&&
+
+Huffman Theory
+
+Overview:
+Huffman coding is a lossless data compression algorithm. The idea is to assign variable-length codes to input
+characters; lengths of the assigned codes are based on the frequencies of corresponding characters. The most
+frequent character gets the smallest code and the least frequent character gets the largest code.
+The variable-length codes assigned to input characters are Prefix Codes, means the codes (bit sequences) are
+assigned in such a way that the code assigned to one character is not the prefix of code assigned to any other
+character. This is how Huffman Coding makes sure that there is no ambiguity when decoding the generated
+bitstream.
+
+Time Complexity= O(nlogn) where n is number of unique characters
+
+Code:
+
+Node class:
+
+Node class represents a node in the Huffman tree.
+It contains attributes for frequency (freq), symbol (character) to be encoded (symbol), references to left and right children (left and right), and the Huffman code (huff) for the character.
+__lt__ method:
+
+This method is a comparison operator overridden in the Node class for use in the priority queue (heapq). It enables comparing nodes based on their frequencies.
+printNodes function:
+
+This function recursively traverses the Huffman tree and prints the Huffman codes for each character leaf node.
+It starts with an empty val, which stores the Huffman code for each character.
+It traverses the tree, appending '0' for the left child and '1' for the right child until it reaches a leaf node. Once it reaches a leaf node, it prints the character and its corresponding Huffman code.
+main function:
+
+It prompts the user to enter the number of characters and their frequencies.
+It creates Node objects for each character and their frequency, adding them to a priority queue (nodes) using heapq.
+It then performs the Huffman coding algorithm by repeatedly dequeuing the two nodes with the lowest frequencies, creating a new node with the combined frequency, and reconnecting the dequeued nodes as left and right children of the new node.
+It assigns '0' and '1' to the left and right children (left.huff and right.huff) to build the Huffman code path.
+Finally, it calls the printNodes function with the root node of the Huffman tree to display the Huffman codes for each character.
+
+
+&&&&&&&&&&
+
+
+&&&&&&&&&&
+
+fractional knapsack Theory
+
+Overview:
+
+Given the weights and values of N items, put these items in a knapsack of capacity W to get the maximum total
+value in the knapsack. In Fractional Knapsack, we can break items for maximizing the total value of the
+knapsack
+Note: In the 0-1 Knapsack problem, we are not allowed to break items. We either take the whole item or don‘t
+take it.
+An efficient solution is to use the Greedy approach. The basic idea of the greedy approach is to calculate the
+ratio value/weight for each item and sort the item on the basis of this ratio. Then take the item with the highest
+ratio and add them until we can‘t add the next item as a whole and at the end add the next item as much as we
+can which will always be the optimal solution to this problem.
+
+
+Time Complexity= O(nlogn)
+
+
+Here's a breakdown of the code:
+
+Item class:
+
+Item class represents items with attributes such as weight, value, and value per weight (which is calculated as the value divided by the weight). This ratio is used to determine the most valuable items concerning their weight.
+knapsack_fractional function:
+
+The function takes a list of items and the capacity of the knapsack as input.
+It sorts the items based on their value-to-weight ratio in descending order, ensuring the most valuable items are considered first.
+It initializes total_value as 0 and an empty knapsack list to keep track of the selected items and their respective fractions.
+It iterates through the sorted items and adds them to the knapsack until the knapsack's capacity is reached or no more items are available.
+For each item, it calculates the fraction of the item's weight to be added to the knapsack based on the remaining capacity. It considers the entire item if the remaining capacity is greater than the item's weight.
+It updates the total_value by adding the value of the selected fraction of the item.
+The function returns the total value in the knapsack and the list of selected items with their respective fractions.
+main function:
+
+The main function prompts the user to enter the number of items and their weights and values.
+It creates a list of Item objects based on the user input and stores them in the items list.
+It also prompts the user to input the capacity of the knapsack.
+It then calls the knapsack_fractional function with the list of items and the knapsack capacity.
+Finally, it prints the items selected for the knapsack along with their respective fractions and the total value present in the knapsack.
+
+
+
+&&&&&&&&&&
+
+&&&&&&&&&&
+
+01 Knapsack Theory
+
+Overview:
+
+Given a set of items, each with a weight and a value, determine a subset of items to include in a collection so that
+the total weight is less than or equal to a given limit and the total value is as large as possible.
+
+Dynamic Programming Approach- Let i be the highest-numbered item in an optimal solution S for W dollars. Then S' = S - {i} is an optimal
+solution for W - wi dollars and the value to the solution S is Vi plus the value of the sub-problem.
+We can express this fact in the following formula: define c[i, w] to be the solution for items 1,2, ... , i and the
+maximum weight w.
+
+Branch and Bound Approach:
+Branch and bound is an algorithm design paradigm which is generally used for solving combinatorial
+optimization problems. These problems typically exponential in terms of time complexity and may require
+exploring all possible permutations in worst case. Branch and Bound solve these problems relatively quickly.
+
+Time Complexity= O(2^n)
+
+Code:
+
+ The 0/1 Knapsack problem is a classic optimization problem where given a set of items, each with a weight and a value, the goal is to determine the most valuable combination of items that can be included in a knapsack of limited capacity.
+
+Here's an explanation of the code:
+
+knapsack_01 function:
+
+Arguments: weights (list of item weights), values (list of item values), and capacity (maximum capacity of the knapsack).
+The function initializes a 2D list dp (dynamic programming array) with dimensions (n+1) x (capacity+1) where n is the number of items.
+It then iterates over each item and builds a dynamic programming table to determine the maximum value that can be achieved for every sub-capacity and subset of items.
+The algorithm fills in the dp table considering each item's weight and value, aiming to maximize the value while ensuring the weight of selected items doesn't exceed the knapsack's capacity.
+The dp[i][w] value at each cell represents the maximum value that can be obtained with i items and a knapsack capacity of w.
+The algorithm compares the value of adding the ith item to the knapsack against the value without including it, ensuring the weight constraints are satisfied. It updates dp[i][w] accordingly.
+The function returns the maximum value that can be obtained with the given capacity and items.
+main function:
+
+Asks the user to input the number of items, weights of items, values of items, and the capacity of the knapsack.
+Converts the input strings to lists of integers.
+Calls the knapsack_01 function with the provided input.
+Finally, it prints the maximum value that can be obtained within the knapsack given the items' weights and values.
+
+
+&&&&&&&&&&
+
+&&&&&&&&&&
+
+N Queen Theory
+
+Overview:
+The N-Queens problem aims to place N chess queens on an N×N chessboard so that no two queens attack each other. The algorithm uses a backtracking approach to find a valid placement for the queens on the board.
+Backtracking Algorithm
+The idea is to place queens one by one in different columns, starting from the leftmost column. When we place a
+queen in a column, we check for clashes with already placed queens. In the current column, if we find a row for
+which there is no clash, we mark this row and column as part of the solution. If we do not find such a row due to
+clashes, then we backtrack and return false.
+1) Start in the leftmost column
+2) If all queens are placed
+return true
+3) Try all rows in the current column.
+Do following for every tried row.
+a) If the queen can be placed safely in this row
+then mark this [row, column] as part of the
+solution and recursively check if placing
+the queen here leads to a solution.
+b) If placing the queen in [row, column] leads to
+a solution then return true.
+c) If placing queen doesn't lead to a solution then
+unmark this [row, column] (Backtrack) and go to
+step (a) to try other rows.
+4) If all rows have been tried and nothing worked,
+return false to trigger backtracking.
+
+
+Time Complexity: O(N!)
+
+
+
+Here's a concise explanation of the code:
+
+is_safe function:
+
+is_safe checks if it's safe to place a queen at a given position on the board (denoted by row and col indices).
+It verifies if placing a queen at that position would conflict with other queens already placed on the board, horizontally, diagonally, or anti-diagonally.
+solve_n_queens function:
+
+solve_n_queens recursively attempts to place queens on the board in a column-wise manner (starting from col).
+It checks if it's safe to place a queen in a specific column and proceeds to the next column.
+If it finds a valid arrangement, it returns True.
+If the current arrangement doesn't lead to a solution, it backtracks by resetting the last placed queen (board[i][col] = 0) and tries a different position.
+print_board function:
+
+print_board prints the final placement of queens on the board as 'Q' in their respective positions.
+main function:
+
+The user inputs the size of the chessboard n and the column index for the first queen.
+A 2D list board representing the chessboard is initialized.
+The first queen is placed at the specified column index in the first row.
+The solve_n_queens function is called to find a solution for placing N queens, starting from the second column.
+If a solution exists, it prints the N-Queens matrix; otherwise, it displays a message indicating that no solution exists for the given configuration.
+
+&&&&&&&&&&
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Theory Version 2.0
+
+DAA HACKSSS
+
+1. Fibonacci 
+
+Time Complexity:
+O(n) fibonacci non recursive
+O(2^N) fibonacci recursive
+
+Space Complexity:
+O(n) for both for printing n numbers of series
+
+
+2.
+Time Complexity:
+Constructing the Huffman Tree: O(n * log(n))
+The time complexity of constructing the Huffman tree using a greedy algorithm is generally O(n * log(n)), where 'n' is the number of symbols in the input. This is because, in each step, the algorithm selects and combines two nodes (or subtrees) with the lowest frequencies. This process is repeated until a single tree is formed. The log(n) factor arises from the priority queue or min-heap data structure used in the process.
+Space Complexity:
+
+Space Complexity: O(n)
+The space complexity of Huffman coding using the greedy method is O(n), where 'n' is the number of distinct symbols in the input. This space is required to store the Huffman tree itself, which consists of nodes representing the symbols and their frequencies. 
+
+
+
+3.
+Time Complexity:
+
+Sorting Items: O(n * log(n))
+Greedy Algorithm: O(n)
+The time complexity of the greedy method for the Fractional Knapsack Problem is dominated by two main steps:
+
+a. Sorting the items based on their value-to-weight ratios. This step typically takes O(n * log(n)) time if you use a sorting algorithm like quicksort or mergesort.
+
+b. The greedy algorithm itself, which involves iterating through the sorted items once to select the items to put into the knapsack. This step takes O(n) time.
+
+Space Complexity: O(1)
+The space complexity of the Fractional Knapsack Problem using the greedy method is typically O(1), as it doesn't require additional data structures or memory that grow with the size of the input. It operates in-place, and the space usage remains constant regardless of the number of items.
+
+
+
+4.
+Time Complexity:
+Constructing the DP Table: O(n * W)
+Backtracking to Find the Solution: O(n + W)
+The time complexity of solving the 0/1 Knapsack Problem using dynamic programming is as follows:
+
+a. Constructing the Dynamic Programming (DP) table, where 'n' is the number of items and 'W' is the maximum weight capacity of the knapsack. This step typically takes O(n * W) time. The DP table is a 2D array, and for each cell, you consider the two previous rows (i-1 items) and check if it's worth including the current item for various knapsack weights.
+
+b. Backtracking to find the selected items that contribute to the optimal solution. This step takes O(n + W) time, where 'n' is the number of items, and 'W' is the maximum knapsack capacity. You start from the last cell of the DP table and follow the path that led to the optimal value to identify the selected items.
+Space Complexity: O(n * W)
+The space complexity for solving the 0/1 Knapsack Problem using dynamic programming is O(n * W) due to the need to create a DP table of size (n+1) x (W+1) to store the intermediate results. Each cell in the table stores the maximum value that can be achieved for a specific combination of items and knapsack capacities.
+
+
+5. 
+
+Time Complexity:
+
+Exponential Time: O(N!)
+The time complexity of the N-Queens problem using backtracking is exponential. It is typically O(N!) in the worst case, where 'N' is the number of queens (or the size of the chessboard). This is because the number of possible configurations grows factorially with 'N'. The backtracking algorithm explores different configurations and eliminates those that violate the constraint of no two queens attacking each other.
+
+Space Complexity: O(N^2)
+The space complexity is O(N^2), where 'N' is the size of the chessboard. This space is primarily used to represent the chessboard as a 2D array or data structure where you can place and track the queens. The size of this data structure scales with the size of the chessboard but doesn't depend on the number of solutions or the backtracking process itself.
+
+
+
+Problem Solving Strategies:
+1. Brute Force: This strategy involves trying every possible solution until the correct one is found. It is simple but not always efficient.
+
+Example: Searching for a specific number in an unsorted list by checking each element one by one.
+
+2. Divide and Conquer: This approach breaks a problem into smaller subproblems, solves them, and then combines the solutions to solve the original problem.
+
+Example: Merge Sort algorithm divides an array into smaller subarrays, sorts them, and then merges them to achieve a sorted array.
+
+3. Greedy Algorithm: Greedy algorithms make a series of locally optimal choices at each step to reach an overall optimal solution.
+
+Example: The coin change problem, where you aim to make change for a specific amount using the fewest coins by selecting the largest denomination first.
+
+4. Dynamic Programming: Dynamic programming involves breaking a problem into overlapping subproblems, solving each subproblem only once, and storing the results for future use.
+
+Example: The Fibonacci sequence can be calculated using dynamic programming to avoid redundant calculations.
+
+5. Backtracking: Backtracking is used to solve problems where you try out different possibilities and backtrack when you encounter an incorrect solution.
+
+Example: The N-Queens problem, where you place N queens on an N×N chessboard without any two queens attacking each other.
+
+6. Branch and Bound: This strategy is often used for optimization problems. It involves systematically searching through the solution space and bounding the search to find the best solution.
+
+Example: The Traveling Salesman Problem, where you find the shortest route to visit a set of cities once and return to the starting city.
+
+7. A Search*: A* is a heuristic search algorithm that finds the shortest path between nodes in a graph, taking into account both the actual cost and an estimated cost to reach the goal.
+
+Example: Finding the shortest path on a map using A* search to consider both distance and estimated travel time.
+
+8. Breadth-First Search (BFS): BFS explores all nodes at the current level before moving to the next level in a graph or tree.
+
+Example: Finding the shortest path in an unweighted graph, like finding the shortest number of steps to reach a specific node in a maze.
+
+9. Depth-First Search (DFS): DFS explores as far as possible along a branch before backtracking.
+
+Example: Solving puzzles like Sudoku or the Eight-Puzzle by systematically trying different values and backtracking when an incorrect move is made.
+
+10. Genetic Algorithms: Genetic algorithms are inspired by the process of natural selection and evolve a population of potential solutions to a problem over many generations.
+
+Example: Evolving a population of potential solutions to optimize the design of a complex engineering component.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
